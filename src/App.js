@@ -1,7 +1,7 @@
-import { Table, Select } from "@mantine/core";
+import { Table, Select, Checkbox } from "@mantine/core";
 import { orderExample } from "./order";
 import { useState, useEffect } from "react";
-
+import Sort from "./components/Sort";
 const App = () => {
   const [orders, setOrders] = useState([]);
   const [sortCriteria, setSortCriteria] = useState("");
@@ -22,7 +22,6 @@ const App = () => {
           }
         })
       : orders;
-
   const rows = sortedOrders.map((order, index) => (
     <tr key={`${index}`}>
       <td>{order.user}</td>
@@ -36,24 +35,11 @@ const App = () => {
   ));
   return (
     <div>
-      <Select
-        label="Sort By"
-        placeholder="Pick one"
-        data={[
-          { value: "cost", label: "Cost" },
-          { value: "weight", label: "Weight" },
-        ]}
-        value={sortCriteria}
-        onChange={setSortCriteria}
-      />
-      <Select
-        placeholder="Pick one"
-        data={[
-          { value: "ascending", label: "Ascending" },
-          { value: "descending", label: "Descending" },
-        ]}
-        value={sortOrder}
-        onChange={setSortOrder}
+      <Sort
+        sortCriteria={sortCriteria}
+        sortOrder={sortOrder}
+        setSortCriteria={setSortCriteria}
+        setSortOrder={setSortOrder}
       />
       <Table withBorder highlightOnHover>
         <thead>

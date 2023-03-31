@@ -1,8 +1,11 @@
-import { Table } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+
+import { Table, Button } from "@mantine/core";
 import { orderExample } from "./order";
 import { useState, useEffect } from "react";
 import Sort from "./components/Sort";
 import Filter from "./components/Filter";
+import Edit from "./components/Edit";
 const App = () => {
   const [orders, setOrders] = useState([]);
   const [sortCriteria, setSortCriteria] = useState("");
@@ -10,6 +13,15 @@ const App = () => {
   const [statusFilters, setStatusFilters] = useState([]);
   const [filterPlace, setFilterPlace] = useState("");
   const [placeFilters, setPlaceFilters] = useState([]);
+  const [opened, { open, close }] = useDisclosure(false);
+  const [modalUser, setModalUser] = useState("");
+  const [modalShipper, setModalShipper] = useState("");
+  const [modalWeight, setModalWeight] = useState(0);
+  const [modalCost, setModalCost] = useState(0);
+  const [modalSource, setModalSource] = useState("");
+  const [modalDestination, setModalDestination] = useState("");
+  const [modalStatus, setModalStatus] = useState("");
+  const [index, setIndex] = useState(0);
   useEffect(() => {
     setOrders(orderExample);
   }, []);
@@ -36,6 +48,22 @@ const App = () => {
           }
         })
       : filteredOrdersByPlace;
+
+  const modalSubmit = (event) => {
+    const filtered = orders
+      .filter((a, i) => i !== index)
+      .concat({
+        user: modalUser,
+        shipper: modalShipper,
+        weight: modalWeight,
+        cost: modalCost,
+        source: modalSource,
+        destination: modalDestination,
+        status: modalStatus,
+      });
+    setOrders(filtered);
+    close();
+  };
   const rows = sortedOrders.map((order, index) => (
     <tr key={`${index}`}>
       <td>{order.user}</td>
@@ -45,6 +73,16 @@ const App = () => {
       <td>{order.source}</td>
       <td>{order.destination}</td>
       <td>{order.status}</td>
+      <td>
+        <Button
+          onClick={() => {
+            open();
+            setIndex(index);
+          }}
+        >
+          Edit
+        </Button>
+      </td>
     </tr>
   ));
   return (
@@ -77,6 +115,25 @@ const App = () => {
         </thead>
         <tbody>{rows}</tbody>
       </Table>
+      <Edit
+        modalSubmit={modalSubmit}
+        opened={opened}
+        close={close}
+        modalUser={modalUser}
+        setModalUser={setModalUser}
+        modalShipper={modalShipper}
+        setModalShipper={setModalShipper}
+        modalWeight={modalWeight}
+        setModalWeight={setModalWeight}
+        modalCost={modalCost}
+        setModalCost={setModalCost}
+        modalSource={modalSource}
+        setModalSource={setModalSource}
+        modalDestination={modalDestination}
+        setModalDestination={setModalDestination}
+        modalStatus={modalStatus}
+        setModalStatus={setModalStatus}
+      />
     </div>
   );
 };

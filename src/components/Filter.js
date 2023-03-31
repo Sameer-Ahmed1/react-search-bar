@@ -22,7 +22,6 @@ const Filter = ({
         </Checkbox.Group>
       </div>
       <div>
-        Filter By
         <Select
           label="Place"
           placeholder="Pick one"
@@ -33,11 +32,7 @@ const Filter = ({
           value={filterPlace}
           onChange={setFilterPlace}
         />
-        <Checkbox.Group
-          //   label="Status"
-          value={placeFilters}
-          onChange={setPlaceFilters}
-        >
+        <Checkbox.Group value={placeFilters} onChange={setPlaceFilters}>
           <Checkbox value="hyderabad" label="Hyderabad" />
           <Checkbox value="bangalore" label="Bangalore" />
           <Checkbox value="mumbai" label="Mumbai" />

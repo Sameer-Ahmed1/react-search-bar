@@ -8,15 +8,24 @@ const App = () => {
   const [sortCriteria, setSortCriteria] = useState("");
   const [sortOrder, setSortOrder] = useState("");
   const [statusFilters, setStatusFilters] = useState([]);
+  const [filterPlace, setFilterPlace] = useState("");
+  const [placeFilters, setPlaceFilters] = useState([]);
   useEffect(() => {
     setOrders(orderExample);
   }, []);
+
   const filteredOrdersByStatus = statusFilters.length
     ? orders.filter((a) => statusFilters.includes(a.status))
     : orders;
+  const filteredOrdersByPlace =
+    filterPlace && placeFilters.length
+      ? filteredOrdersByStatus.filter((a) => {
+          return placeFilters.includes(a[filterPlace]);
+        })
+      : filteredOrdersByStatus;
   const sortedOrders =
     sortCriteria && sortOrder
-      ? filteredOrdersByStatus.sort((a, b) => {
+      ? filteredOrdersByPlace.sort((a, b) => {
           if (!sortCriteria || !sortOrder) return 0;
           if (a[sortCriteria] < b[sortCriteria]) {
             return sortOrder === "ascending" ? -1 : 1;
@@ -26,7 +35,7 @@ const App = () => {
             return 0;
           }
         })
-      : filteredOrdersByStatus;
+      : filteredOrdersByPlace;
   const rows = sortedOrders.map((order, index) => (
     <tr key={`${index}`}>
       <td>{order.user}</td>
@@ -49,6 +58,10 @@ const App = () => {
       <Filter
         statusFilters={statusFilters}
         setStatusFilters={setStatusFilters}
+        filterPlace={filterPlace}
+        setFilterPlace={setFilterPlace}
+        placeFilters={placeFilters}
+        setPlaceFilters={setPlaceFilters}
       />
       <Table withBorder highlightOnHover>
         <thead>

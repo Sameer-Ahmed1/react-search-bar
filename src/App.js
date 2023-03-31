@@ -1,17 +1,22 @@
-import { Table, Select, Checkbox } from "@mantine/core";
+import { Table } from "@mantine/core";
 import { orderExample } from "./order";
 import { useState, useEffect } from "react";
 import Sort from "./components/Sort";
+import Filter from "./components/Filter";
 const App = () => {
   const [orders, setOrders] = useState([]);
   const [sortCriteria, setSortCriteria] = useState("");
   const [sortOrder, setSortOrder] = useState("");
+  const [statusFilters, setStatusFilters] = useState([]);
   useEffect(() => {
     setOrders(orderExample);
   }, []);
+  const filteredOrdersByStatus = statusFilters.length
+    ? orders.filter((a) => statusFilters.includes(a.status))
+    : orders;
   const sortedOrders =
     sortCriteria && sortOrder
-      ? orders.sort((a, b) => {
+      ? filteredOrdersByStatus.sort((a, b) => {
           if (!sortCriteria || !sortOrder) return 0;
           if (a[sortCriteria] < b[sortCriteria]) {
             return sortOrder === "ascending" ? -1 : 1;
@@ -21,7 +26,7 @@ const App = () => {
             return 0;
           }
         })
-      : orders;
+      : filteredOrdersByStatus;
   const rows = sortedOrders.map((order, index) => (
     <tr key={`${index}`}>
       <td>{order.user}</td>
@@ -40,6 +45,10 @@ const App = () => {
         sortOrder={sortOrder}
         setSortCriteria={setSortCriteria}
         setSortOrder={setSortOrder}
+      />
+      <Filter
+        statusFilters={statusFilters}
+        setStatusFilters={setStatusFilters}
       />
       <Table withBorder highlightOnHover>
         <thead>
